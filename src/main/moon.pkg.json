@@ -1,0 +1,17 @@
+{
+  "import": [
+    "gmlewis/moonbit-pdk/pdk",
+    "gmlewis/moonbit-pdk/pdk/host",
+    {"path": "furesoft/moos-sdk/lib", "alias": "moss"}
+  ],
+  "link": {
+    "wasm": {
+      "exports": [
+        "moss_extension_register",
+        "moss_extension_unregister",
+        "moss_extension_loop"
+      ],
+      "export-memory-name": "memory"
+    }
+  }
+}
