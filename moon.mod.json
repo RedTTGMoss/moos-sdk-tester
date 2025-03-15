@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "deps": {
     "gmlewis/moonbit-pdk": "0.47.2",
-    "furesoft/moos-sdk": "0.1.1"
+    "furesoft/moos-sdk": "0.1.4"
   },
   "readme": "README.md",
   "repository": "",

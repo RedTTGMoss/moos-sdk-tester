@@ -1,10 +1,11 @@
 pub fn moss_extension_register() -> Int {
-  let extensionInfo: @moss.ExtensionInfo = {
+  let extensionInfo: @moss_types.ExtensionInfo = {
     files: []
   }
-  //extensionInfo.output()
-  @host.output_json_value(extensionInfo.to_json())
-  extensionInfo.output()
+
+  @moss.defaults_set_color("BACKGROUND", {r: 0, g: 0: b: 255});
+
+  @moss.send(extensionInfo)
 
   0
 }

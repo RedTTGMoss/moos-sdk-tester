@@ -2,7 +2,8 @@
   "import": [
     "gmlewis/moonbit-pdk/pdk",
     "gmlewis/moonbit-pdk/pdk/host",
-    {"path": "furesoft/moos-sdk/lib", "alias": "moss"}
+    {"path": "furesoft/moos-sdk/lib", "alias": "moss"},
+    {"path": "furesoft/moos-sdk/lib/types", "alias": "moss_types"}
   ],
   "link": {
     "wasm": {
