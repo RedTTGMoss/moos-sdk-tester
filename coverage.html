@@ -1,0 +1,99 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Coverage Overview</title>
+        <style>
+            body { font-family: Arial, sans-serif; max-width: 500px; margin: auto; background-color: black; color: white; }
+            .progress-container { background: #444; border-radius: 5px; overflow: hidden; height: 20px; margin-bottom: 10px; position: relative; }
+            .progress-green { height: 100%; background: #4caf50; position: absolute; left: 0; top: 0; width: 0%; }
+            .progress-blue { height: 100%; background: #2196F3; position: absolute; left: 0; top: 0; width: 0%; }
+            .todo-item { display: flex; align-items: center; margin: 5px 0; }
+            .completed { text-decoration: line-through; color: gray; }
+            input[type="checkbox"] { margin-right: 10px; }
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+    </head>
+    <body>
+        <h2>Coverage Overview</h2>
+        <div class="progress-container">
+            <div class="progress-green" id="progress-green"></div>
+            <div class="progress-blue" id="progress-blue"></div>
+        </div>
+        <div id="todo-list"></div>
+
+        <script>
+            const functions = ["moss_api_content_new_epub", "moss_api_content_new_notebook", "moss_api_content_new_pdf", "moss_api_delete", "moss_api_delete_many_documents", "moss_api_document_duplicate", "moss_api_document_ensure_download", "moss_api_document_ensure_download_and_callback", "moss_api_document_export", "moss_api_document_load_files_from_cache", "moss_api_document_new_epub", "moss_api_document_new_notebook", "moss_api_document_new_pdf", "moss_api_document_randomize_uuids", "moss_api_document_unload_files", "moss_api_get", "moss_api_get_all", "moss_api_get_file", "moss_api_get_root", "moss_api_metadata_new", "moss_api_new_document_sync_progress", "moss_api_new_file_sync_progress", "_moss_api_set", "moss_api_spread_event", "moss_api_upload", "moss_api_upload_many_documents", "moss_defaults_get", "moss_defaults_get_color", "moss_defaults_get_text_color", "_moss_defaults_set", "moss_defaults_set_text_color", "moss_em_get_state", "moss_em_loader_progress", "moss_em_register_extension_button", "moss_gui_invert_icon", "moss_gui_open_context_menu", "moss_gui_register_context_menu", "moss_pe_close_screen", "_moss_pe_draw_rect", "moss_pe_get_screen_value", "_moss_pe_open_screen", "moss_pe_register_screen", "_moss_pe_set_screen_value", "moss_text_display", "moss_text_get_rect", "moss_text_make", "moss_text_set_font", "moss_text_set_rect", "moss_text_set_text"];
+            const calledFunctions = ["moss_defaults_set_color", "moss_em_config_get", "_moss_em_config_set", "moss_em_export_statistical_data"];
+            const todoList = document.getElementById("todo-list");
+            
+            function generateColor(module) {
+                const hash = module.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                const hue = (hash * 137) % 360; // Use a larger multiplier to spread out the hues
+                const color = chroma.hsl(hue, 0.7, 0.5); // Fixed saturation and lightness for better contrast
+                return color.hex();
+            }
+            
+            function formatFunctionName(func) {
+                const parts = func.split('_').filter(Boolean);
+                const module = parts[1];
+                const color = generateColor(module);
+                const formatted = parts.slice(2).join('_');
+                return `<span style="color: ${color};">${module}</span> → ${formatted}`;
+            }
+            
+
+            function updateProgress() {
+                const total = functions.length + calledFunctions.length;
+                const called = calledFunctions.length;
+                const checked = document.querySelectorAll("input[type='checkbox']:checked").length;
+
+                const greenWidth = (called / total * 100) + "%";
+                const blueWidth = (checked / total * 100) + "%";
+            
+                document.getElementById("progress-green").style.width = greenWidth;
+                document.getElementById("progress-blue").style.width = blueWidth;
+                document.getElementById("progress-blue").style.left = greenWidth;
+            }
+
+            function loadTodos() {
+                functions.forEach(func => {
+                    const item = document.createElement("div");
+                    item.className = "todo-item";
+
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = func;
+                    checkbox.checked = localStorage.getItem(func) === "true";
+
+                    checkbox.addEventListener("change", () => {
+                        localStorage.setItem(func, checkbox.checked);
+                        updateProgress();
+                    });
+
+                    const label = document.createElement("label");
+                    label.htmlFor = func;
+                    label.innerHTML = formatFunctionName(func);
+
+                    item.appendChild(checkbox);
+                    item.appendChild(label);
+                    todoList.appendChild(item);
+                });
+
+                calledFunctions.forEach(func => {
+                    const item = document.createElement("div");
+                    item.className = "todo-item completed";
+                    item.textContent = func;
+                    todoList.appendChild(item);
+                });
+
+                updateProgress();
+            }
+
+            loadTodos();
+        </script>
+    </body>
+    </html>
+    
