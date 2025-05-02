@@ -13,6 +13,10 @@ pub fn moss_extension_register() -> Int {
   
   @host.log_info_str("Moss Extension Example: " + name)
 
+  let btn = @types.ContextButton::new("Text", "cloud", "no_action", "")
+
+  @moss.register_extension_button(btn)
+
   @moss.send(extensionInfo)
 
   0
